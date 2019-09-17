@@ -71,7 +71,7 @@ function sorted_map_object(unsorted_map){
   var mapAsc = new Map(Array
       .from(unsorted_map)
       .sort((a, b) => {
-        // a[0], b[0] is the key of the map
+        /** a[0], b[0] is the key of the map */
         return a[0] - b[0];
       })
     )
@@ -107,7 +107,7 @@ function map_to_obj(mapObj){
 }
 
 function die_string_to_numbers(die_string){
-  /**
+/**
  * Turns a die string into an array needed for the dice rolling script
  *
  * @param {string} die_string The string representing what dice to roll i.e. 5d10
@@ -141,6 +141,8 @@ function die_string_to_numbers(die_string){
 function add_up_array(total, current_val){
   return total + current_val
 }
+
+
 
 
 /**

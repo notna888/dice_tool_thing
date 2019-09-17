@@ -1,0 +1,5 @@
+jsmin
+webassets
+jinja2
+cssmin
+libsass==0.19.2
