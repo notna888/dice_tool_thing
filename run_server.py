@@ -5,8 +5,8 @@ import os
 PORT = 8000
 Handler = http.server.SimpleHTTPRequestHandler
 
-def launch_web_server():
-  WEBDIR = os.path.join(os.path.dirname(__file__), 'output')
+def launch_web_server(directory):
+  WEBDIR = os.path.join(os.path.dirname(__file__), directory)
   os.chdir(WEBDIR)
 
   with socketserver.TCPServer(("", PORT), Handler) as httpd:

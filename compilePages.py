@@ -16,6 +16,7 @@ import re
 import pathlib
 import getopt
 
+output_dir = 'docs'
 
 class NoopFilter(Filter):
     name = 'noop'
@@ -66,8 +67,8 @@ def compile_pages_and_assets(dev=False):
     for page in pages:
         thisTemplate = jinja_env.get_template('pages/' + page)
         thisTempRendered = thisTemplate.render()
-        file_name = 'output/' + page
-        body_content_location = 'output/content/' + page
+        file_name = output_dir + '/' + page
+        body_content_location = output_dir + '/content/' + page
         pathlib.Path(os.path.dirname(file_name)).mkdir(parents=True, exist_ok=True)
         pathlib.Path(os.path.dirname(body_content_location)).mkdir(parents=True, exist_ok=True)
         with open(file_name, 'w') as tempFile:
@@ -82,7 +83,7 @@ def compile_pages_and_assets(dev=False):
             tempFile.write(onlyTheBodyPart)
 
     src = 'resources'
-    dst = 'output/assets'
+    dst = output_dir + '/assets'
     filelist = []
     files = ['main.css', 'packed.js']
     for filename in files:
@@ -109,6 +110,6 @@ def main(argv):
 
 if __name__ == '__main__':
     main(sys.argv[1:])
-    launch_web_server()
+    launch_web_server(output_dir)
 
 # python -m http.server -d 'output'

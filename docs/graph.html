@@ -135,7 +135,7 @@
           .attr('y', function (d) {return height - get_val(d);})
           .attr('style', function (d) { return get_style(d)});
 
-
+    
     function get_val(d) {
       if (typeof max_val == 'undefined') {
         max_val = 1500
@@ -164,6 +164,7 @@
     function get_colour(d){
       return d['value']['fill_colour']
     }
+
 
   </script>
 
