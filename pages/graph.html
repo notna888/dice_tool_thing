@@ -5,7 +5,7 @@
 {% block extrahead %}
   <script src="https://d3js.org/d3.v5.min.js"></script>
 
-  <script src="js/generate_dice_rolls.js" charset="utf-8"></script>
+  <!-- <script src="js/generate_dice_rolls.js" charset="utf-8"></script> -->
 
 
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -88,7 +88,7 @@
           .attr('y', function (d) {return height - get_val(d);})
           .attr('style', function (d) { return get_style(d)});
 
-    
+
     function get_val(d) {
       if (typeof max_val == 'undefined') {
         max_val = 1500

@@ -16,7 +16,6 @@ import re
 import pathlib
 import getopt
 
-output_dir = 'docs'
 
 class NoopFilter(Filter):
     name = 'noop'
@@ -31,7 +30,15 @@ register_filter(NoopFilter)
 
 # Need to remove the already compiled assets here...
 
-def compile_pages_and_assets(dev=False):
+def compile_pages_and_assets(dev=False, gh_pages=False):
+
+    if(gh_pages):
+        output_dir = 'docs'
+    else:
+        output_dir = 'output'
+
+    make_sure_all_folders_exists(output_dir)
+
     compiledSass = ''
     sass_files_to_compile = ['main.scss']
     for sassFile in sass_files_to_compile:
@@ -69,6 +76,7 @@ def compile_pages_and_assets(dev=False):
         thisTempRendered = thisTemplate.render()
         file_name = output_dir + '/' + page
         body_content_location = output_dir + '/content/' + page
+        header_content_location = output_dir + '/content/head/' + page
         pathlib.Path(os.path.dirname(file_name)).mkdir(parents=True, exist_ok=True)
         pathlib.Path(os.path.dirname(body_content_location)).mkdir(parents=True, exist_ok=True)
         with open(file_name, 'w') as tempFile:
@@ -82,6 +90,12 @@ def compile_pages_and_assets(dev=False):
         with open(body_content_location, 'w') as tempFile:
             tempFile.write(onlyTheBodyPart)
 
+        result = re.search('<!-- Start Additional Header Part --> (.*) </head>', '"' + thisTempRendered.replace('"', '\"').replace('\n',' ') + '"')
+        onlyTheExtraHeader = result.group(1)
+        with open(header_content_location, 'w') as tempFile:
+            tempFile.write(onlyTheExtraHeader)
+
+
     src = 'resources'
     dst = output_dir + '/assets'
     filelist = []
@@ -91,9 +105,23 @@ def compile_pages_and_assets(dev=False):
       fullpath = src + '/' + filename
       shutil.move(os.path.join(src, filename), os.path.join(dst, filename))
 
+def make_sure_all_folders_exists(base_dir):
+    make_sure_folder_exists(base_dir)
+    make_sure_folder_exists(base_dir+'/assets/')
+    make_sure_folder_exists(base_dir+'/content/')
+    make_sure_folder_exists(base_dir+'/content/head/')
+    make_sure_folder_exists(base_dir+'/pages/')
+
+def make_sure_folder_exists(dir):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
 
 def main(argv):
     developer_mode = False
+    gh_pages = True
+    launch_webserver_on_compile = False
+
     try:
         opts, args = getopt.getopt(argv,"hd::",["dev=",])
     except getopt.GetoptError:
@@ -103,13 +131,20 @@ def main(argv):
             print('compilePages.py -hd')
             print('h: This help text')
             print('d: developer mode - skips minification')
+            # print('')
+            print('s: serve the compiled page after compilation')
             sys.exit()
         elif opt in ("-d", "--dev"):
             developer_mode = True
-    compile_pages_and_assets(developer_mode)
+        elif opt in ("-s", "--serve"):
+            launch_webserver_on_compile = True
+
+    compile_pages_and_assets(developer_mode, gh_pages)
+
+    if(launch_webserver_on_compile):
+        launch_web_server(output_dir)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
-    launch_web_server(output_dir)
 
 # python -m http.server -d 'output'
